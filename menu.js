@@ -7,9 +7,6 @@ class Menu {
         this.map = new Map;
     }
     addDrink(num, name, time) {
-        if(num === undefined || name === undefined || time === undefined) {
-            return false;
-        }
         if(!isNaturalNumber(num)) return false;
         if(!isNaturalNumber(time)) return false;
         if(!isString(name)) return false;
