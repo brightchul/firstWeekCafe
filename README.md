@@ -20,7 +20,5 @@ git clone https://github.com/brightchul/firstWeekCafe.git
 
 cd firstWeekCafe
 
-npm install
-
-npm start
+node run.js
 ```
