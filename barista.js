@@ -32,7 +32,6 @@ class Barista {
     run() {
         if(!this.hasWaitDrink()) return;
         this.startMaking();
-        this.run();
     }
     hasWaitDrink() {
         if(this.makingQueue.length == 0) return false;
@@ -51,8 +50,9 @@ class Barista {
             setTimeout(() => res(order), order.getOneMakingTime() * 1000);
         }).then(order => {
             this.completeDrink(order);
-            this.run();
+            this.run(); // 만들던 것이 완료되면 그 다음 주문들을 처리하기 위함
         });
+        this.run(); // 2개 이상 주문을 했을 때 동시 처리를 위함
     }
     getWaitingOrder() {
         return this.makingQueue.find(order => order.hasWaiting());
