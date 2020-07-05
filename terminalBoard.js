@@ -13,19 +13,30 @@ function clear() {
     console.clear();
 }
 
+const WAITING_ORDERS_TEXT = "========[ 대기하는 주문 ]========";
+const MAKING_ORDERS_TEXT  = "========[만드는 중인 주문]========";
+const COMPLETE_ORDERS_TEXT ="========[  완료된 주문  ]========";
+
+
 /**
- * @param {arr} orderArr Order객체의 배열을 받는다.
+ * 
+ * @param {Queue} waitingQueue 
+ * @param {Queue} makingQueue 
+ * @param {Queue} completeQueue 
  */
-function show(orderArr) {
+function show(waitingQueue, makingQueue, completeQueue) {
     console.clear();
-    if(orderArr) showOrders(orderArr);
+    showOrders(WAITING_ORDERS_TEXT, waitingQueue);
+    showOrders(MAKING_ORDERS_TEXT, makingQueue);
+    showOrders(COMPLETE_ORDERS_TEXT, completeQueue);
     showMenu();
     return true;
 }
 
-function showOrders(orderArr) {
-    let txt = orderArr.reduce((txt, order) => txt + makeOneOrderTxt(order), "");
-    console.log(txt);
+function showOrders(text,queue) {
+    let ret = text;
+    ret += queue.reduce((txt, order) => txt + makeOneOrderTxt(order), "\n") + "\n";
+    console.log(ret);
 }
 
 function makeOneOrderTxt(orderObj) {
@@ -44,8 +55,7 @@ function checkOrderObj(target) {
 }
 function makeOneDrinkStatusTxt(name, count, comment) {
     let txt = "";
-    for(let i=0; i<count; i++) 
-        txt += `\t${name} ${comment}\n`;
+    for(let i=0; i<count; i++) txt += `\t${name} ${comment}\n`;
     return txt;
 }
 
@@ -57,7 +67,7 @@ function setMenuText(menuArr) {
     menuText = menuArr.reduce((txt,oneMenu) => {
         isBoardOneMenuDTO(oneMenu);
         return `${txt}    ${oneMenu.toString()})`;
-    }, "[[") + "    ]]";
+    }, "[[") + "    ]]\n 주문입력 >";
     return true;
 } 
 

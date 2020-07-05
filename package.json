@@ -4,7 +4,7 @@
   "description": "",
   "main": "1.js",
   "scripts": {
-    "start": "nodemon run.js",
+    "start": "node run.js",
     "test": "jest --verbose"
   },
   "author": "",

@@ -1,31 +1,33 @@
 const Order = require('./order.js');
 const eventEmitter = require('./eventEmitter.js');
 
-
-
 class Barista {
-    constructor(capacity = 2) {
+    constructor({capacity = 2, makingQueue}) {
         this.capacity = capacity;
-        this.current = 0;
+        this.currentOrder = 0;
         this.notCompleteOrder = 0;           // order의 waiting, making 총합을 받는다.
+        this.makingQueue = makingQueue;
         this.orderArr = [];
     }
     possibleNewOrder() {
         return this.capacity > this.notCompleteOrder;
     }
     possibleNewMaking() {
-        return this.capacity > this.current;
+        return this.capacity > this.currentOrder;
     }
     setNewOrder(newOrder) {
-        if(!(newOrder instanceof Order)) throw "Order 클래스가 아닙니다.";
-        if(!this.possibleNewOrder()) return eventEmitter('overCapacity', newOrder);
+        if(!(newOrder instanceof Order)) 
+            throw new TypeError("Order 클래스가 아닙니다.");
+        if(!this.possibleNewOrder()) 
+            return eventEmitter('overCapacity', newOrder);
 
-        this.orderArr.push(newOrder);
+        this.makingQueue.enqueue(newOrder);
         this.calculateNotCompleteOrder();
         this.startMaking();
     }
     calculateNotCompleteOrder() {
-        this.notCompleteOrder = this.orderArr.reduce((total, order) => total + order.getNotComplete(), 0);
+        this.notCompleteOrder = this.makingQueue.reduce(
+            (total, order) => total + order.getNotComplete(), 0);
     }
     run() {
         if(!this.hasWaitDrink()) return;
@@ -33,16 +35,17 @@ class Barista {
         this.run();
     }
     hasWaitDrink() {
-        if(this.orderArr.length == 0) return false;
+        if(this.makingQueue.length == 0) return false;
         if(!this.possibleNewMaking()) return false;
         if(!this.getWaitingOrder()) return false;
+
         return true;
     }
     startMaking() {
         const order = this.getWaitingOrder();
         order.makingOne();
-        ++this.current;
-        eventEmitter.emit('makingStart', order.getDrinkName());
+        ++this.currentOrder;
+        eventEmitter.emit('makingStart');
 
         new Promise((res,rej)=> {
             setTimeout(() => res(order), order.getOneMakingTime() * 1000);
@@ -52,22 +55,28 @@ class Barista {
         });
     }
     getWaitingOrder() {
-        return this.orderArr.find(order => order.hasWaiting());
+        return this.makingQueue.find(order => order.hasWaiting());
     }
     removeOrder(order) {
-        const orderIndex = this.orderArr.indexOf(order);
-        this.orderArr.splice(orderIndex, 1);
+        const orderIndex = this.makingQueue.indexOf(order);
+        this.makingQueue.splice(orderIndex, 1);
     }
     completeDrink(order) {
         order.completeOne();
-        eventEmitter.emit('oneComplete', order);
-        --this.notCompleteOrder;
-        --this.current;
+        eventEmitter.emit('completeOne', order);
+        this.decreaseNotCompleteOrder();
 
         if(order.isAllComplete()) {
-            this.removeOrder(order);
-            eventEmitter.emit('moveCompleteOrder', order);
+            this.allComplateOrder(order);
         }
+    }
+    decreaseNotCompleteOrder() {
+        --this.notCompleteOrder;
+        --this.currentOrder;
+    }
+    allComplateOrder(order) {
+        this.removeOrder(order);
+        eventEmitter.emit('moveCompleteOrder', order);
     }
 }
 

@@ -2,6 +2,7 @@ const readline = require("readline");
 const eventEmitter = require("./eventEmitter.js");
 const {Menu} = require("./menu.js");
 const {isNaturalNumber, isString} = require('./myUtil.js');
+const Order = require("./order.js");
 
 const ORDER_MSG = "주문할 음료를 입력하세요 > ";
 const WRONG_ORDER_MSG = "잘못된 주문입니다. ex) 1:2"
@@ -16,20 +17,19 @@ const checkMenuClass = v => {
 class Cashier {
     constructor(menu) {
         checkMenuClass(menu);
+        this.orderCount = 1;
         this.menu = menu;
-    }
-    start() {
-        const rl = readline.createInterface({
+        this.rl = readline.createInterface({
             input: process.stdin,
             output: process.stdout
         });
-        
+    }
+    start() {
+        const rl = this.rl;
         let msg = ORDER_MSG;
         rl.setPrompt(msg);
         rl.prompt();
         rl.on("line", 
-            // 파싱, 체크, 프롬프트호출, 이미터 호출등 하나의 메서드가 하는 일이 너무많다.
-            // 어떻게 나눠야 할까?
             (textLine) => {
                 if(!this.isCorrectFormat(textLine)) 
                     msg = WRONG_ORDER_MSG;
@@ -39,8 +39,8 @@ class Cashier {
                         msg = NOT_MENU_NUM;
                     else {
                         const drink = this.menu.getDrink(num);
-                        eventEmitter.emit('newOrder', drink, count);
-                        msg = `${drink.name} ${count}개 주문하셨습니다.`;
+                        const order = new Order(this.orderCount++, drink, count);
+                        eventEmitter.emit('newOrder', order);
                     }
                 }
                 console.log(msg+"\n");
@@ -50,6 +50,10 @@ class Cashier {
         rl.on("close", () => {
             process.exit(); 
         });  
+    }
+    restart() {
+        this.rl.close();
+        this.start();
     }
 
     /**
