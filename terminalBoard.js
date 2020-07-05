@@ -1,5 +1,14 @@
 const Order = require('./order.js');
 
+
+const COMPLETE_COMMENT = "1잔 완료";
+const MAKING_COMMENT = "1잔 만드는 중";
+const WAITING_COMMENT = "1잔 대기 중";
+const MENU_NOT_SETTING_MSG = "메뉴가 생성되지 않았습니다.";
+
+let menuText = undefined;   // 메뉴 텍스트를 저장한다.
+
+
 function clear() {
     console.clear();
 }
@@ -9,7 +18,7 @@ function clear() {
  */
 function show(orderArr) {
     console.clear();
-    showOrders(orderArr);
+    if(orderArr) showOrders(orderArr);
     showMenu();
     return true;
 }
@@ -19,13 +28,10 @@ function showOrders(orderArr) {
     console.log(txt);
 }
 
-const COMPLETE_COMMENT = "1잔 완료";
-const MAKING_COMMENT = "1잔 만드는 중";
-const WAITING_COMMENT = "1잔 대기 중";
-
 function makeOneOrderTxt(orderObj) {
     checkOrderObj(orderObj);
     const {id, drink, count, waiting, making, complete} = orderObj;
+
     let txt = `${id}번 주문\n`;
     txt += makeOneDrinkStatusTxt(drink.getName(), complete, COMPLETE_COMMENT);
     txt += makeOneDrinkStatusTxt(drink.getName(), making, MAKING_COMMENT);
@@ -43,8 +49,6 @@ function makeOneDrinkStatusTxt(name, count, comment) {
     return txt;
 }
 
-let menuText = undefined;
-const MENU_NOT_SETTING_MSG = "메뉴가 생성되지 않았습니다.";
 /**
  * menu는 [BoardOneMenuDTO,...]로 받는다.
  * @param {arr} menuArr 
@@ -55,7 +59,7 @@ function setMenuText(menuArr) {
         return `${txt}    ${oneMenu.toString()})`;
     }, "[[") + "    ]]";
     return true;
-}
+} 
 
 /**
  * 
