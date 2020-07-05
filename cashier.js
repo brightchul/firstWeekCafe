@@ -19,43 +19,24 @@ class Cashier {
         checkMenuClass(menu);
         this.orderCount = 1;
         this.menu = menu;
-        this.rl = readline.createInterface({
-            input: process.stdin,
-            output: process.stdout
-        });
+        // this.rl = readline.createInterface({
+        //     input: process.stdin,
+        //     output: process.stdout
+        // });
     }
-    start() {
-        const rl = this.rl;
-        let msg = ORDER_MSG;
-        rl.setPrompt(msg);
-        rl.prompt();
-        rl.on("line", 
-            (textLine) => {
-                if(!this.isCorrectFormat(textLine)) 
-                    msg = WRONG_ORDER_MSG;
-                else {
-                    const [num, count] = this.parsing(textLine);
-                    if(!this.menu.hasMenu(num)) 
-                        msg = NOT_MENU_NUM;
-                    else {
-                        const drink = this.menu.getDrink(num);
-                        const order = new Order(this.orderCount++, drink, count);
-                        eventEmitter.emit('newOrder', order);
-                    }
-                }
-                console.log(msg+"\n");
-                rl.prompt();
-            }
-        );
-        rl.on("close", () => {
-            process.exit(); 
-        });  
-    }
-    restart() {
-        this.rl.close();
-        this.start();
-    }
+    order(orderText) {
+        if(!this.isCorrectFormat(orderText)) 
+            return eventEmitter.emit('wrongOrderFormat', WRONG_ORDER_MSG);
 
+        const [num, count] = this.parsing(orderText);
+        if(!this.menu.hasMenu(num)) 
+            return eventEmitter.emit('notMenuNumber', NOT_MENU_NUM);
+        
+        const drink = this.menu.getDrink(num);
+        const order = new Order(this.orderCount++, drink, count);
+        eventEmitter.emit('newOrder', order);
+    }
+    
     /**
      * '숫자:숫자' 포맷을 확인한다.
      * @param {string} text 

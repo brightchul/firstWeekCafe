@@ -24,13 +24,18 @@ const COMPLETE_ORDERS_TEXT ="========[  완료된 주문  ]========";
  * @param {Queue} makingQueue 
  * @param {Queue} completeQueue 
  */
-function show(waitingQueue, makingQueue, completeQueue) {
+function show(waitingQueue, makingQueue, completeQueue, msg) {
     console.clear();
     showOrders(WAITING_ORDERS_TEXT, waitingQueue);
     showOrders(MAKING_ORDERS_TEXT, makingQueue);
     showOrders(COMPLETE_ORDERS_TEXT, completeQueue);
     showMenu();
+    if(msg) showAdditionalMsg(msg);
     return true;
+}
+
+function showAdditionalMsg(msg) {
+    console.log(msg);
 }
 
 function showOrders(text,queue) {
@@ -67,7 +72,7 @@ function setMenuText(menuArr) {
     menuText = menuArr.reduce((txt,oneMenu) => {
         isBoardOneMenuDTO(oneMenu);
         return `${txt}    ${oneMenu.toString()})`;
-    }, "[[") + "    ]]\n 주문입력 >";
+    }, "[[") + "    ]]\n";
     return true;
 } 
 

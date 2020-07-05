@@ -5,7 +5,8 @@ const Manager = require('./manager.js');
 const Barista = require('./barista.js');
 const Queue = require('./queue.js');
 
-const terminalBoard = require('./terminalBoard.js');
+const terminalInput = require('./terminalinput.js');
+const terminalBoard = new require('./terminalBoard.js');
 const eventEmitter = require('./eventEmitter.js');
 
 const makingQueue = new Queue();
@@ -17,10 +18,14 @@ const manager = new Manager();
 const cashier = new Cashier(menu);
 const barista = new Barista({makingQueue});
 
+eventEmitter.on('newTextLineInput', textLine => {
+    cashier.order(textLine);
+});
+
 eventEmitter.on('moveCompleteOrder', order => {
     completeQueue.enqueue(order);
     terminalBoard.show(waitingQueue, makingQueue, completeQueue);
-    // cashier.restart();
+    terminalInput.question();
 });
 
 eventEmitter.on('checkWaitingOrder', () => {
@@ -34,7 +39,7 @@ eventEmitter.on('baristaAllowableNewOrder', () => {
         const order = waitingQueue.dequeue();
         barista.setNewOrder(order);
         terminalBoard.show(waitingQueue, makingQueue, completeQueue);
-        // cashier.restart();
+        terminalInput.question();
     }
 });
 
@@ -45,18 +50,30 @@ eventEmitter.on('overCapacity', newOrder => {
 
 eventEmitter.on('makingStart', () => {
     terminalBoard.show(waitingQueue, makingQueue, completeQueue);
-    // cashier.restart();
+    terminalInput.question();
 });
 eventEmitter.on('completeOne', order => {
     terminalBoard.show(waitingQueue, makingQueue, completeQueue);
-    // cashier.restart();
+    terminalInput.question();
+});
+
+eventEmitter.on("wrongOrderFormat", (msg) => {
+    terminalBoard.show(waitingQueue, makingQueue, completeQueue, msg);
+    terminalInput.question();
+});
+
+eventEmitter.on("notMenuNumber", (msg) => {
+    terminalBoard.show(waitingQueue, makingQueue, completeQueue, msg);
+    terminalInput.question();
 });
 
 eventEmitter.on("newOrder", (order) => {
     waitingQueue.enqueue(order);
     terminalBoard.show(waitingQueue, makingQueue, completeQueue);
-    // cashier.restart();
+    terminalInput.question();
 });
+
+
 
 function menuSetting(menu) {
     menu.addDrink(1, "아메리카노", 3);
@@ -69,8 +86,7 @@ function start() {
     manager.intervalCheck();
     terminalBoard.setMenuText(menu.getInfo());
     terminalBoard.show(waitingQueue, makingQueue, completeQueue);
-    // cashier.restart();
-    cashier.start();
+    terminalInput.question();
 }
 
 module.exports = {start};
