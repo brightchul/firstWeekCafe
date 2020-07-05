@@ -1,0 +1,16 @@
+{
+  "name": "firstWeekCafe",
+  "version": "1.0.0",
+  "description": "",
+  "main": "1.js",
+  "scripts": {
+    "start": "nodemon run.js",
+    "test": "jest --verbose"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^26.1.0",
+    "nodemon": "^2.0.4"
+  }
+}
