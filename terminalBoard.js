@@ -1,22 +1,17 @@
-const Order = require('./order.js');
+// 터미널 보드는 하나만 있으면 되기에 모듈로 끝냈다.
 
+const Order = require('./order.js');
 
 const COMPLETE_COMMENT = "1잔 완료";
 const MAKING_COMMENT = "1잔 만드는 중";
 const WAITING_COMMENT = "1잔 대기 중";
 const MENU_NOT_SETTING_MSG = "메뉴가 생성되지 않았습니다.";
 
-let menuText = undefined;   // 메뉴 텍스트를 저장한다.
-
-
-function clear() {
-    console.clear();
-}
-
 const WAITING_ORDERS_TEXT = "========[ 대기하는 주문 ]========";
 const MAKING_ORDERS_TEXT  = "========[만드는 중인 주문]========";
 const COMPLETE_ORDERS_TEXT ="========[  완료된 주문  ]========";
 
+let menuText = undefined;   // 메뉴 텍스트를 저장한다.
 
 /**
  * 

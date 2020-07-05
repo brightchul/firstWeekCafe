@@ -1,7 +1,5 @@
 const eventEmitter = require('./eventEmitter.js');
 
-
-
 class Manager {
     constructor() {
         this.completeOrderArr = [];

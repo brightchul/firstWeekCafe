@@ -19,10 +19,6 @@ class Cashier {
         checkMenuClass(menu);
         this.orderCount = 1;
         this.menu = menu;
-        // this.rl = readline.createInterface({
-        //     input: process.stdin,
-        //     output: process.stdout
-        // });
     }
     order(orderText) {
         if(!this.isCorrectFormat(orderText)) 

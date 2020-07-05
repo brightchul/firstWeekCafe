@@ -1,4 +1,4 @@
-// 까페는 단 하나만 있다고 가정했고 그래서 클래스로 따로 만들지는 않았다.
+// 까페는 단 하나만 있다고 가정했고 클래스로 따로 만들지는 않았다.
 const {Menu} = require('./menu.js');
 const Cashier = require('./cashier.js');
 const Manager = require('./manager.js');
