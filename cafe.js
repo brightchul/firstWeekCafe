@@ -24,8 +24,7 @@ eventEmitter.on('newTextLineInput', textLine => {
 
 eventEmitter.on('moveCompleteOrder', order => {
     completeQueue.enqueue(order);
-    terminalBoard.show(waitingQueue, makingQueue, completeQueue);
-    terminalInput.question();
+    updateScreen();
 });
 
 eventEmitter.on('checkWaitingOrder', () => {
@@ -48,32 +47,19 @@ eventEmitter.on('overCapacity', newOrder => {
     waitingQueue.splice(0, 0, newOrder);
 });
 
-eventEmitter.on('makingStart', () => {
-    terminalBoard.show(waitingQueue, makingQueue, completeQueue);
-    terminalInput.question();
-});
-eventEmitter.on('completeOne', order => {
-    terminalBoard.show(waitingQueue, makingQueue, completeQueue);
-    terminalInput.question();
-});
-
-eventEmitter.on("wrongOrderFormat", (msg) => {
-    terminalBoard.show(waitingQueue, makingQueue, completeQueue, msg);
-    terminalInput.question();
-});
-
-eventEmitter.on("notMenuNumber", (msg) => {
-    terminalBoard.show(waitingQueue, makingQueue, completeQueue, msg);
-    terminalInput.question();
+eventEmitter.on('updateScreen', msg => {
+    updateScreen(msg);
 });
 
 eventEmitter.on("newOrder", (order) => {
     waitingQueue.enqueue(order);
-    terminalBoard.show(waitingQueue, makingQueue, completeQueue);
-    terminalInput.question();
+    updateScreen();
 });
 
-
+function updateScreen(msg) {
+    terminalBoard.show(waitingQueue, makingQueue, completeQueue, msg);
+    terminalInput.question();
+}
 
 function menuSetting(menu) {
     menu.addDrink(1, "아메리카노", 3);

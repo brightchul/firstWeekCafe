@@ -44,7 +44,7 @@ class Barista {
         const order = this.getWaitingOrder();
         order.makingOne();
         ++this.currentOrder;
-        eventEmitter.emit('makingStart');
+        eventEmitter.emit('updateScreen');
 
         new Promise((res,rej)=> {
             setTimeout(() => res(order), order.getOneMakingTime() * 1000);
@@ -63,18 +63,19 @@ class Barista {
     }
     completeDrink(order) {
         order.completeOne();
-        eventEmitter.emit('completeOne', order);
         this.decreaseNotCompleteOrder();
 
         if(order.isAllComplete()) {
-            this.allComplateOrder(order);
+            this.completeAllOrder(order);
+        } else {
+            eventEmitter.emit('updateScreen', order);
         }
     }
     decreaseNotCompleteOrder() {
         --this.notCompleteOrder;
         --this.currentOrder;
     }
-    allComplateOrder(order) {
+    completeAllOrder(order) {
         this.removeOrder(order);
         eventEmitter.emit('moveCompleteOrder', order);
     }

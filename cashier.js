@@ -22,11 +22,11 @@ class Cashier {
     }
     order(orderText) {
         if(!this.isCorrectFormat(orderText)) 
-            return eventEmitter.emit('wrongOrderFormat', WRONG_ORDER_MSG);
+            return eventEmitter.emit('updateScreen', WRONG_ORDER_MSG);
 
         const [num, count] = this.parsing(orderText);
         if(!this.menu.hasMenu(num)) 
-            return eventEmitter.emit('notMenuNumber', NOT_MENU_NUM);
+            return eventEmitter.emit('updateScreen', NOT_MENU_NUM);
         
         const drink = this.menu.getDrink(num);
         const order = new Order(this.orderCount++, drink, count);
