@@ -19,25 +19,25 @@ let menuText = undefined;   // 메뉴 텍스트를 저장한다.
  * @param {Queue} makingQueue 
  * @param {Queue} completeQueue 
  */
-function show(waitingQueue, makingQueue, completeQueue, msg) {
+function show(waitingQueue, makingQueue, completeQueue, msg="") {
+    let boardTxt = makeOrdersTxt(WAITING_ORDERS_TEXT, waitingQueue);
+    boardTxt += makeOrdersTxt(MAKING_ORDERS_TEXT, makingQueue);
+    boardTxt += makeOrdersTxt(COMPLETE_ORDERS_TEXT, completeQueue);
+    boardTxt += getMenuTxt();
+    boardTxt += "\n" + msg;
+
     console.clear();
-    showOrders(WAITING_ORDERS_TEXT, waitingQueue);
-    showOrders(MAKING_ORDERS_TEXT, makingQueue);
-    showOrders(COMPLETE_ORDERS_TEXT, completeQueue);
-    showMenu();
-    if(msg) showAdditionalMsg(msg);
+    console.log(boardTxt);
+
     return true;
 }
 
-function showAdditionalMsg(msg) {
-    console.log(msg);
-}
-
-function showOrders(text,queue) {
+function makeOrdersTxt(text, queue) {
     let ret = text;
     ret += queue.reduce((txt, order) => txt + makeOneOrderTxt(order), "\n") + "\n";
-    console.log(ret);
+    return ret;
 }
+
 
 function makeOneOrderTxt(orderObj) {
     checkOrderObj(orderObj);
@@ -90,9 +90,9 @@ class BoardOneMenuDTO {
     }
 }
 
-function showMenu() {
+function getMenuTxt() {
     if(!menuText) return console.log(MENU_NOT_SETTING_MSG);
-    console.log(menuText);
+    return menuText
 }
 
 module.exports = {show, setMenuText, BoardOneMenuDTO};
