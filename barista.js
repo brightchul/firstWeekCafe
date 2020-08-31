@@ -68,7 +68,7 @@ class Barista {
         if(order.isAllComplete()) {
             this.completeAllOrder(order);
         } else {
-            eventEmitter.emit('updateScreen', order);
+            eventEmitter.emit('updateScreen');
         }
     }
     decreaseNotCompleteOrder() {
